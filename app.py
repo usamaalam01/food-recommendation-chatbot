@@ -124,6 +124,15 @@ st.markdown(
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
+        # Display recipes if present in the message
+        if "recipes" in msg:
+            for recipe in msg["recipes"]:
+                st.image(recipe["imgurl"], width=220)
+                st.markdown(f"**{recipe['name'].title()}**")
+                st.markdown(f"⏱️ {recipe['total_time_minutes']} minutes")
+                st.markdown(recipe["summary"])
+                st.markdown(f"🧠 *Why this?* {recipe['explanation']}")
+                st.divider()
 
 user_input = st.chat_input("Tell me what you're in the mood for...")
 
@@ -133,6 +142,10 @@ if user_input:
     st.session_state.messages.append(
         {"role": "user", "content": user_input}
     )
+
+    # Display user message immediately
+    with st.chat_message("user"):
+        st.markdown(user_input)
 
     # Extract preferences using LLM
     new_prefs = extract_preferences_from_text(user_input)
@@ -158,92 +171,81 @@ if user_input:
         st.session_state.messages.append(
             {"role": "assistant", "content": assistant_text}
         )
-
-        with st.chat_message("assistant"):
-            st.markdown(assistant_text)
+        st.rerun()
 
     else:
         missing = missing_signals(st.session_state.preferences)
 
-        with st.chat_message("assistant"):
-            if missing:
-                st.markdown(follow_up_question(missing))
-            else:
+        if missing:
+            assistant_text = follow_up_question(missing)
+            st.session_state.messages.append({
+                "role": "assistant",
+                "content": assistant_text
+            })
+        else:
+            if "offset" not in st.session_state.preferences:
+                st.session_state.preferences["offset"] = 0
 
-                if "offset" not in st.session_state.preferences:
+            recs = recommend_foods(
+                df,
+                st.session_state.preferences,
+                st.session_state.semantic_ranker
+            )
+
+            # If no results, try relaxing preferences once
+            relaxed_message = ""
+            if recs.empty and not st.session_state.relaxed_once:
+                relaxed = relax_preferences(st.session_state.preferences)
+
+                if relaxed != st.session_state.preferences:
+                    st.session_state.preferences = relaxed
                     st.session_state.preferences["offset"] = 0
+                    st.session_state.relaxed_once = True
+                    relaxed_message = "I relaxed some constraints to find better matches.\n\n"
 
-                # st.session_state.preferences["offset"] = st.session_state.offset
-
-                if st.session_state.preferences.get("max_cook_time"):
-                    st.caption(
-                        f"⏱️ Showing recipes around {st.session_state.preferences['max_cook_time']} minutes"
+                    # Retry with relaxed preferences
+                    recs = recommend_foods(
+                        df,
+                        st.session_state.preferences,
+                        st.session_state.semantic_ranker
                     )
 
-                recs = recommend_foods(
-                    df,
-                    st.session_state.preferences,
-                    st.session_state.semantic_ranker
-                )
-
-
-
-                if recs.empty:
-                    if not st.session_state.relaxed_once:
-                        relaxed = relax_preferences(st.session_state.preferences)
-
-                        if relaxed != st.session_state.preferences:
-                            st.session_state.preferences = relaxed
-                            st.session_state.preferences["offset"] = 0
-                            st.session_state.relaxed_once = True
-
-                            st.session_state.messages.append({
-                                "role": "assistant",
-                                "content": "I relaxed some constraints to find better matches."
-                            })
-
-                            st.rerun()
-                        else:
-                            st.markdown(
-                                "I couldn’t find any recipes even after relaxing preferences."
-                            )
-                    else:
-                        st.markdown(
-                            "No recipes match your preferences. Try changing cuisine, time, or ingredients."
-                        )
-
+            if recs.empty:
+                if relaxed_message:
+                    st.session_state.messages.append({
+                        "role": "assistant",
+                        "content": relaxed_message + "Unfortunately, I still couldn't find any matching recipes. Try changing cuisine, time, or ingredients."
+                    })
                 else:
-                    st.markdown("### 🍽️ Here’s what I recommend:")
-                    for _, row in recs.iterrows():
-                        st.image(row["imgurl"], width=220)
-                        st.markdown(f"**{row['name'].title()}**")
-                        st.markdown(f"⏱️ {row['total_time_minutes']} minutes")
-                        st.markdown(row["summary"])
+                    st.session_state.messages.append({
+                        "role": "assistant",
+                        "content": "No recipes match your preferences. Try changing cuisine, time, or ingredients."
+                    })
 
-                        explanation = explain_recommendation(
-                            row,
-                            st.session_state.preferences
-                        )
+            else:
+                # Build recommendation message with recipe data
+                recipe_data = []
+                for _, row in recs.iterrows():
+                    explanation = explain_recommendation(row, st.session_state.preferences)
+                    recipe_data.append({
+                        "imgurl": row["imgurl"],
+                        "name": row["name"],
+                        "total_time_minutes": row["total_time_minutes"],
+                        "summary": row["summary"],
+                        "explanation": explanation
+                    })
 
-                        st.markdown(f"🧠 *Why this?* {explanation}")
-                        st.divider()
+                time_note = ""
+                if st.session_state.preferences.get("max_cook_time"):
+                    time_note = f"⏱️ Showing recipes around {st.session_state.preferences['max_cook_time']} minutes\n\n"
 
+                st.session_state.messages.append({
+                    "role": "assistant",
+                    "content": relaxed_message + time_note + "### 🍽️ Here's what I recommend:",
+                    "recipes": recipe_data
+                })
 
-                    # if st.button("🔁 Show More"):
-                    #     st.session_state.preferences["offset"] += 5
-
-                    #     # st.session_state.messages.append({
-                    #     #     "role": "assistant",
-                    #     #     "content": "I relaxed some constraints to find better matches."
-                    #     # })
-                        
-                    #     st.rerun()
-
-                    #     # if user_input:
-                    #     #     st.session_state.relaxed_once = False
-
-
-    # st.rerun()
+        st.rerun()
 
 with st.expander("🔍 Current Preferences"):
     prefs = st.session_state.preferences

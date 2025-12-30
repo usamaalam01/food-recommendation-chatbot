@@ -8,7 +8,8 @@ BASE_PREFERENCES = {
     "selected_ingredients": [],
     "excluded_ingredients": [],
     "diet": None,
-    "offset": 0
+    "offset": 0,
+    "skipped_fields": []  # Fields the user doesn't care about
 }
 
 COURSE_ALIASES = {
@@ -53,6 +54,10 @@ def validate_preferences(prefs: dict) -> dict:
         if key in prefs and prefs[key] not in [None, [], {}]:
             validated[key] = prefs[key]
 
+    # Always include skipped_fields even if empty list
+    if "skipped_fields" in prefs and isinstance(prefs["skipped_fields"], list):
+        validated["skipped_fields"] = prefs["skipped_fields"]
+
     return validated
 
 
@@ -66,8 +71,8 @@ def merge_preferences(old: dict, new: dict) -> dict:
         if key == "keywords":
             merged["keywords"] = list(set(merged["keywords"] + value))
 
-        elif key in ["selected_ingredients", "excluded_ingredients"]:
-            merged[key] = list(set(merged[key] + value))
+        elif key in ["selected_ingredients", "excluded_ingredients", "skipped_fields"]:
+            merged[key] = list(set(merged.get(key, []) + value))
 
         elif key == "offset":
             merged["offset"] += value

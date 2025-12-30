@@ -1,12 +1,13 @@
 def next_action(preferences: dict) -> dict:
+    skipped = preferences.get("skipped_fields", [])
 
-    if not preferences.get("course"):
+    if not preferences.get("course") and "course" not in skipped:
         return {
             "type": "ask",
             "message": "Is this for breakfast, lunch, dinner, or a snack?"
         }
 
-    if not preferences.get("max_cook_time"):
+    if not preferences.get("max_cook_time") and "max_cook_time" not in skipped:
         return {
             "type": "ask",
             "message": "How much time do you want to spend cooking?"
