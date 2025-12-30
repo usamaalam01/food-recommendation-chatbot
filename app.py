@@ -14,6 +14,10 @@ from services.refinement_detector import detect_refinement
 from services.conversation_policy import relax_preferences
 from services.explanation_engine import explain_recommendation
 
+APP_NAME = "Food Recommendation Chatbot"
+APP_VERSION = "v1.0.0"
+APP_OWNER = "© 2026 All rights reserved"
+
 @st.cache_resource
 def load_data():
     return load_food_dataset("data/foods_data.csv")
@@ -50,16 +54,51 @@ if "semantic_ranker" not in st.session_state:
 
 # st.write("DATA SAMPLE", df.sample(5)[["name", "course", "cuisine"]])
 
-st.set_page_config(page_title="Food Recommendation Chatbot", layout="wide")
+st.set_page_config(
+    page_title=APP_NAME,
+    page_icon="🍽️",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+st.markdown(
+    """
+    <style>
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+    hr {
+        margin: 1.5rem 0;
+    }
+    footer {
+        visibility: hidden;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# with st.sidebar:
+#     # st.header("Session Controls")
+
+#     if st.button("🔄 Start New Recommendation"):
+#         st.session_state.messages = []
+#         st.session_state.preferences = BASE_PREFERENCES.copy()
+#         st.session_state.relaxed_once = False
+#         st.rerun()
 
 with st.sidebar:
-    # st.header("Session Controls")
+    st.markdown("### 🛠️ Session Controls")
 
-    if st.button("🔄 Start New Recommendation"):
+    if st.button("🔄 Start New Recommendation", use_container_width=True):
         st.session_state.messages = []
         st.session_state.preferences = BASE_PREFERENCES.copy()
         st.session_state.relaxed_once = False
         st.rerun()
+
+    st.markdown("---")
+    st.markdown(f"**Version:** {APP_VERSION}")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -71,7 +110,14 @@ if "relaxed_once" not in st.session_state:
     st.session_state.relaxed_once = False    
 
 
-st.title("🍽️ What Should I Cook Today?")
+st.markdown(
+    f"""
+    ## 🍽️ What Should I Cook Today?
+    *AI-powered recipe recommendations tailored to your taste*
+    
+    ---
+    """,
+)
 
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
@@ -178,7 +224,7 @@ if user_input:
                         )
 
                         st.markdown(f"🧠 *Why this?* {explanation}")
-                        st.markdown("---")
+                        st.divider()
 
 
                     if st.button("🔁 Show More"):
@@ -197,7 +243,7 @@ if user_input:
 
     # st.rerun()
 
-with st.expander("Current Preferences"):
+with st.expander("🔍 Current Preferences"):
     prefs = st.session_state.preferences
     lines = []
 
@@ -218,4 +264,14 @@ with st.expander("Current Preferences"):
 
     st.markdown("\n".join(lines) if lines else "No preferences yet.")                
 
-    
+    st.markdown("---")
+
+st.markdown(
+    f"""
+    <div style="text-align: center; color: gray; font-size: 0.85rem;">
+        {APP_NAME} · {APP_VERSION}<br>
+        {APP_OWNER}
+    </div>
+    """,
+    unsafe_allow_html=True
+)
