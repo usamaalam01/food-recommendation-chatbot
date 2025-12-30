@@ -229,18 +229,18 @@ if user_input:
                         st.divider()
 
 
-                    if st.button("🔁 Show More"):
-                        st.session_state.preferences["offset"] += 5
+                    # if st.button("🔁 Show More"):
+                    #     st.session_state.preferences["offset"] += 5
 
-                        # st.session_state.messages.append({
-                        #     "role": "assistant",
-                        #     "content": "I relaxed some constraints to find better matches."
-                        # })
+                    #     # st.session_state.messages.append({
+                    #     #     "role": "assistant",
+                    #     #     "content": "I relaxed some constraints to find better matches."
+                    #     # })
                         
-                        st.rerun()
+                    #     st.rerun()
 
-                        # if user_input:
-                        #     st.session_state.relaxed_once = False
+                    #     # if user_input:
+                    #     #     st.session_state.relaxed_once = False
 
 
     # st.rerun()
