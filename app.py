@@ -53,7 +53,7 @@ if "semantic_ranker" not in st.session_state:
 st.set_page_config(page_title="Food Recommendation Chatbot", layout="wide")
 
 with st.sidebar:
-    st.header("Session Controls")
+    # st.header("Session Controls")
 
     if st.button("🔄 Start New Recommendation"):
         st.session_state.messages = []
