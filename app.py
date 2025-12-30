@@ -2,6 +2,18 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import streamlit as st
+
+APP_NAME = "Food Recommendation Chatbot"
+APP_VERSION = "v1.0.0"
+APP_OWNER = "© 2026 All rights reserved"
+
+st.set_page_config(
+    page_title=APP_NAME,
+    page_icon="🍽️",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
 from services.llm_extractor import extract_preferences_from_text
 from services.preference_utils import BASE_PREFERENCES, merge_preferences
 from services.recommender import recommend_foods
@@ -13,10 +25,6 @@ from services.conversation_guard import missing_signals, follow_up_question
 from services.refinement_detector import detect_refinement
 from services.conversation_policy import relax_preferences
 from services.explanation_engine import explain_recommendation
-
-APP_NAME = "Food Recommendation Chatbot"
-APP_VERSION = "v1.0.0"
-APP_OWNER = "© 2026 All rights reserved"
 
 @st.cache_resource
 def load_data():
@@ -54,12 +62,6 @@ if "semantic_ranker" not in st.session_state:
 
 # st.write("DATA SAMPLE", df.sample(5)[["name", "course", "cuisine"]])
 
-st.set_page_config(
-    page_title=APP_NAME,
-    page_icon="🍽️",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
 
 st.markdown(
     """
@@ -89,7 +91,7 @@ st.markdown(
 #         st.rerun()
 
 with st.sidebar:
-    st.markdown("### 🛠️ Session Controls")
+    # st.markdown("### 🛠️ Session Controls")
 
     if st.button("🔄 Start New Recommendation", use_container_width=True):
         st.session_state.messages = []
@@ -97,8 +99,8 @@ with st.sidebar:
         st.session_state.relaxed_once = False
         st.rerun()
 
-    st.markdown("---")
-    st.markdown(f"**Version:** {APP_VERSION}")
+    # st.markdown("---")
+    # st.markdown(f"**Version:** {APP_VERSION}")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -266,11 +268,36 @@ with st.expander("🔍 Current Preferences"):
 
     st.markdown("---")
 
+# st.markdown(
+#     f"""
+#     <div style="text-align: center; color: gray; font-size: 0.85rem;">
+#         {APP_NAME} · {APP_VERSION}<br>
+#         {APP_OWNER}
+#     </div>
+#     """,
+#     unsafe_allow_html=True
+# )
+
 st.markdown(
     f"""
-    <div style="text-align: center; color: gray; font-size: 0.85rem;">
-        {APP_NAME} · {APP_VERSION}<br>
-        {APP_OWNER}
+    <style>
+    .app-footer {{
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: white;
+        text-align: center;
+        padding: 6px;
+        font-size: 12px;
+        color: gray;
+        border-top: 1px solid #eee;
+        z-index: 999;
+    }}
+    </style>
+
+    <div class="app-footer">
+        {APP_NAME} · {APP_VERSION} · {APP_OWNER}
     </div>
     """,
     unsafe_allow_html=True
