@@ -127,10 +127,42 @@ for msg in st.session_state.messages:
         # Display recipes if present in the message
         if "recipes" in msg:
             for recipe in msg["recipes"]:
-                st.image(recipe["imgurl"], width=220)
-                st.markdown(f"**{recipe['name'].title()}**")
-                st.markdown(f"⏱️ {recipe['total_time_minutes']} minutes")
-                st.markdown(recipe["summary"])
+                col1, col2 = st.columns([1, 2])
+                with col1:
+                    st.image(recipe["imgurl"], width=200)
+                with col2:
+                    st.markdown(f"**{recipe['name'].title()}**")
+                    st.markdown(f"⏱️ {recipe['total_time_minutes']} minutes")
+                    st.markdown(recipe["summary"])
+                    # Ingredients
+                    if "ingredients" in recipe and recipe["ingredients"]:
+                        ingredients_list = recipe["ingredients"]
+                        st.markdown("**Ingredients**")
+                        ingredients_text = ", ".join([ing.title() for ing in ingredients_list[:10]])
+                        if len(ingredients_list) > 10:
+                            ingredients_text += f" *and {len(ingredients_list) - 10} more...*"
+                        st.markdown(ingredients_text)
+                    # Nutrition table
+                    if "nutrition" in recipe:
+                        nutrition = recipe["nutrition"]
+                        st.markdown("**Nutrition Facts**")
+                        nutrition_html = f"""
+                        <table style="width:100%; border-collapse: collapse; font-size: 14px;">
+                            <tr style="background-color: #f8f9fa;">
+                                <td style="padding: 8px; border: 1px solid #dee2e6;"><strong>Calories</strong></td>
+                                <td style="padding: 8px; border: 1px solid #dee2e6;"><strong>Protein</strong></td>
+                                <td style="padding: 8px; border: 1px solid #dee2e6;"><strong>Carbs</strong></td>
+                                <td style="padding: 8px; border: 1px solid #dee2e6;"><strong>Fat</strong></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border: 1px solid #dee2e6;">{nutrition['Calories']}</td>
+                                <td style="padding: 8px; border: 1px solid #dee2e6;">{nutrition['Protein']}</td>
+                                <td style="padding: 8px; border: 1px solid #dee2e6;">{nutrition['Carbs']}</td>
+                                <td style="padding: 8px; border: 1px solid #dee2e6;">{nutrition['Fat']}</td>
+                            </tr>
+                        </table>
+                        """
+                        st.markdown(nutrition_html, unsafe_allow_html=True)
                 st.markdown(f"🧠 *Why this?* {recipe['explanation']}")
                 st.divider()
 
@@ -232,7 +264,14 @@ if user_input:
                         "name": row["name"],
                         "total_time_minutes": row["total_time_minutes"],
                         "summary": row["summary"],
-                        "explanation": explanation
+                        "explanation": explanation,
+                        "ingredients": row.get("ingredients_list", []),
+                        "nutrition": {
+                            "Calories": f"{row.get('calories_kcal', 0):.0f} kcal",
+                            "Protein": f"{row.get('protein_g', 0):.1f} g",
+                            "Carbs": f"{row.get('carbs_g', 0):.1f} g",
+                            "Fat": f"{row.get('fat_g', 0):.1f} g"
+                        }
                     })
 
                 time_note = ""
