@@ -4,7 +4,7 @@ load_dotenv()
 import streamlit as st
 
 APP_NAME = "Food Recommendation Chatbot"
-APP_VERSION = "v1.0.0"
+APP_VERSION = "v1.0.1"
 APP_OWNER = "© 2026 All rights reserved"
 
 st.set_page_config(
