@@ -218,7 +218,7 @@ if user_input:
             if "offset" not in st.session_state.preferences:
                 st.session_state.preferences["offset"] = 0
 
-            recs = recommend_foods(
+            recs, time_relaxed = recommend_foods(
                 df,
                 st.session_state.preferences,
                 st.session_state.semantic_ranker
@@ -236,11 +236,15 @@ if user_input:
                     relaxed_message = "I relaxed some constraints to find better matches.\n\n"
 
                     # Retry with relaxed preferences
-                    recs = recommend_foods(
+                    recs, time_relaxed = recommend_foods(
                         df,
                         st.session_state.preferences,
                         st.session_state.semantic_ranker
                     )
+
+            # Add message if time constraint was relaxed
+            if time_relaxed and not relaxed_message:
+                relaxed_message = "No recipes found within your time limit. Showing closest matches.\n\n"
 
             if recs.empty:
                 if relaxed_message:

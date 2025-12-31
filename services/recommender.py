@@ -62,11 +62,25 @@ def recommend_foods(df, preferences, semantic_ranker, top_k=5):
         ranked = ranked[ranked["cuisine"].str.contains(preferences["cuisine"], case=False, na=False)]
 
     if ranked.empty:
-        return ranked
+        return ranked, False
 
-    # 3️⃣ SOFT cook time (scoring, not filtering)
+    # 3️⃣ Cook time handling - try strict first, then soft
+    max_time = preferences.get("max_cook_time")
+    time_relaxed = False
+
+    if max_time:
+        # First try: strict filter with some tolerance (20% buffer)
+        time_tolerance = max_time * 1.2
+        strict_filtered = ranked[ranked["total_time_minutes"] <= time_tolerance]
+
+        if not strict_filtered.empty:
+            ranked = strict_filtered
+        else:
+            # No recipes within time limit, will show longer recipes
+            time_relaxed = True
+
+    # Soft cook time scoring (applies to whatever results we have)
     def cook_time_bonus(row):
-        max_time = preferences.get("max_cook_time")
         if not max_time or pd.isna(row["total_time_minutes"]):
             return 0.0
         diff = row["total_time_minutes"] - max_time
@@ -82,4 +96,4 @@ def recommend_foods(df, preferences, semantic_ranker, top_k=5):
 
     # 4️⃣ Pagination
     offset = preferences.get("offset", 0)
-    return ranked.iloc[offset : offset + top_k]
+    return ranked.iloc[offset : offset + top_k], time_relaxed
