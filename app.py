@@ -132,6 +132,12 @@ for msg in st.session_state.messages:
                     st.image(recipe["imgurl"], width="stretch")
                 with col2:
                     st.markdown(f"**{recipe['name'].title()}**")
+                    # Show cuisine and course tags
+                    cuisine = recipe.get("cuisine", "").title() if recipe.get("cuisine") else ""
+                    course = recipe.get("course", "").title() if recipe.get("course") else ""
+                    tags = " | ".join(filter(None, [cuisine, course]))
+                    if tags:
+                        st.caption(tags)
                     st.markdown(f"⏱️ {recipe['total_time_minutes']} minutes")
                     st.markdown(recipe["summary"])
                     # Ingredients
@@ -275,6 +281,8 @@ if user_input:
                     recipe_data.append({
                         "imgurl": row["imgurl"],
                         "name": row["name"],
+                        "cuisine": row.get("cuisine", ""),
+                        "course": row.get("course", ""),
                         "total_time_minutes": row["total_time_minutes"],
                         "summary": row["summary"],
                         "explanation": explanation,
