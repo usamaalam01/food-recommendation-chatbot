@@ -14,7 +14,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-from services.llm_extractor import extract_preferences_from_text
+from services.llm_extractor import extract_preferences_from_text, is_greeting, get_greeting_response
 from services.preference_utils import BASE_PREFERENCES, merge_preferences
 from services.recommender import recommend_foods
 from services.data_loader import load_food_dataset,build_recipe_documents
@@ -127,9 +127,9 @@ for msg in st.session_state.messages:
         # Display recipes if present in the message
         if "recipes" in msg:
             for recipe in msg["recipes"]:
-                col1, col2 = st.columns([1, 2])
+                col1, col2 = st.columns([1, 3], gap="small")
                 with col1:
-                    st.image(recipe["imgurl"], width=200)
+                    st.image(recipe["imgurl"], width="stretch")
                 with col2:
                     st.markdown(f"**{recipe['name'].title()}**")
                     st.markdown(f"⏱️ {recipe['total_time_minutes']} minutes")
@@ -179,6 +179,15 @@ if user_input:
     with st.chat_message("user"):
         st.markdown(user_input)
 
+    # Check if it's a greeting
+    if is_greeting(user_input):
+        greeting_response = get_greeting_response()
+        st.session_state.messages.append({
+            "role": "assistant",
+            "content": greeting_response
+        })
+        st.rerun()
+
     # Extract preferences using LLM
     new_prefs = extract_preferences_from_text(user_input)
     refinements = detect_refinement(user_input)
@@ -218,7 +227,7 @@ if user_input:
             if "offset" not in st.session_state.preferences:
                 st.session_state.preferences["offset"] = 0
 
-            recs, time_relaxed = recommend_foods(
+            recs, constraints_relaxed = recommend_foods(
                 df,
                 st.session_state.preferences,
                 st.session_state.semantic_ranker
@@ -236,15 +245,15 @@ if user_input:
                     relaxed_message = "I relaxed some constraints to find better matches.\n\n"
 
                     # Retry with relaxed preferences
-                    recs, time_relaxed = recommend_foods(
+                    recs, constraints_relaxed = recommend_foods(
                         df,
                         st.session_state.preferences,
                         st.session_state.semantic_ranker
                     )
 
-            # Add message if time constraint was relaxed
-            if time_relaxed and not relaxed_message:
-                relaxed_message = "No recipes found within your time limit. Showing closest matches.\n\n"
+            # Add message if some constraints were relaxed
+            if constraints_relaxed and not relaxed_message:
+                relaxed_message = "Couldn't find exact matches for all your criteria. Showing closest matches.\n\n"
 
             if recs.empty:
                 if relaxed_message:

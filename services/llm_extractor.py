@@ -1,10 +1,37 @@
 # services/llm_extractor.py
 
 import json
+import re
 from typing import Dict
 from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage, HumanMessage
 from services.preference_utils import validate_preferences
+
+# Greeting patterns
+GREETING_PATTERNS = [
+    r"^(hi|hello|hey|hola|howdy|greetings|good\s*(morning|afternoon|evening|day))[\s!.,?]*$",
+    r"^(what'?s\s*up|sup|yo)[\s!.,?]*$",
+    r"^(how\s*are\s*you|how'?s\s*it\s*going|how\s*do\s*you\s*do)[\s!.,?]*$",
+]
+
+GREETING_RESPONSES = [
+    "Hello! I'm your food recommendation assistant. Tell me what you're in the mood to eat today!",
+    "Hi there! Ready to help you find the perfect recipe. What kind of food are you craving?",
+    "Hey! I'm here to help you discover delicious recipes. What would you like to cook today?",
+]
+
+def is_greeting(text: str) -> bool:
+    """Check if the message is a greeting."""
+    text = text.lower().strip()
+    for pattern in GREETING_PATTERNS:
+        if re.match(pattern, text, re.IGNORECASE):
+            return True
+    return False
+
+def get_greeting_response() -> str:
+    """Return a random greeting response."""
+    import random
+    return random.choice(GREETING_RESPONSES)
 
 PREFERENCE_SCHEMA = {
     "course": None,
