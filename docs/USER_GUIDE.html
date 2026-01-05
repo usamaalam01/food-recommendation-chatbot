@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Guide - Food Recommendation Chatbot</title>
+    <style>
+        :root {
+            --primary-color: #ef4444;
+            --primary-dark: #dc2626;
+            --secondary-color: #f97316;
+            --bg-color: #fef2f2;
+            --text-color: #1f2937;
+            --card-bg: #ffffff;
+            --border-color: #fecaca;
+            --success-color: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.8;
+            color: var(--text-color);
+            background-color: #fff;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+        }
+
+        .emoji-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .welcome-section {
+            background: var(--bg-color);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin: -50px auto 40px;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            max-width: 800px;
+        }
+
+        .welcome-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        h2 .section-emoji {
+            font-size: 2rem;
+        }
+
+        h3 {
+            color: var(--primary-dark);
+            font-size: 1.4rem;
+            margin: 30px 0 15px 0;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+        }
+
+        .step-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 25px;
+            background: var(--primary-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .step-card h3 {
+            margin-top: 5px;
+        }
+
+        .example-box {
+            background: #f8fafc;
+            border-left: 4px solid var(--primary-color);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+            font-family: 'Consolas', monospace;
+        }
+
+        .example-box .user {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .example-box .bot {
+            color: #059669;
+            font-weight: bold;
+        }
+
+        .example-line {
+            margin: 8px 0;
+        }
+
+        .tip-box {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .tip-icon {
+            font-size: 1.5rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h4 {
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        th, td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #fef2f2;
+        }
+
+        .example-phrases {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .phrase-chip {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+        }
+
+        .faq-item {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            background: var(--bg-color);
+            padding: 20px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            cursor: pointer;
+        }
+
+        .faq-answer {
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .good-bad-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .good-example {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .bad-example {
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .good-example h4 {
+            color: #059669;
+            margin-bottom: 10px;
+        }
+
+        .bad-example h4 {
+            color: #dc2626;
+            margin-bottom: 10px;
+        }
+
+        .button-demo {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+
+        footer {
+            background: #1f2937;
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 60px;
+        }
+
+        footer p {
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        ul {
+            margin: 15px 0 15px 25px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .good-bad-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-section {
+                margin: -30px 15px 30px;
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="emoji-icon">🍽️</div>
+        <h1>User Guide</h1>
+        <p>Your AI-Powered Recipe Assistant</p>
+    </header>
+
+    <div class="welcome-section">
+        <h2>Welcome!</h2>
+        <p>The Food Recommendation Chatbot is your personal kitchen companion that helps you discover delicious recipes based on your preferences. Simply tell it what you're in the mood for, and it will suggest recipes tailored to your tastes!</p>
+    </div>
+
+    <div class="container">
+        <section>
+            <h2><span class="section-emoji">🚀</span> Getting Started</h2>
+
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3>Open the App</h3>
+                <p>Open your web browser and navigate to the chatbot. You'll see a friendly chat interface ready to help you find recipes.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3>Start a Conversation</h3>
+                <p>Just type what you're looking for in the chat box at the bottom of the screen:</p>
+                <div class="example-phrases">
+                    <span class="phrase-chip">"I want something spicy for dinner"</span>
+                    <span class="phrase-chip">"Quick breakfast ideas"</span>
+                    <span class="phrase-chip">"Something with chicken"</span>
+                    <span class="phrase-chip">"I'm craving Italian food"</span>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2><span class="section-emoji">💬</span> How to Use the Chatbot</h2>
+
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3>Tell It What You Want</h3>
+                <p>Describe what kind of food you're looking for. You can mention:</p>
+                <ul>
+                    <li><strong>Meal type:</strong> breakfast, lunch, dinner, snack, or dessert</li>
+                    <li><strong>Cuisine:</strong> Indian, Italian, Mexican, Pakistani, etc.</li>
+                    <li><strong>Ingredients:</strong> chicken, vegetables, rice, etc.</li>
+                    <li><strong>Cooking time:</strong> quick meals, under 30 minutes, etc.</li>
+                    <li><strong>Flavors:</strong> spicy, creamy, light, etc.</li>
+                </ul>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3>Answer Follow-up Questions</h3>
+                <p>The chatbot may ask you a few questions to better understand your preferences:</p>
+                <div class="example-box">
+                    <div class="example-line"><span class="user">You:</span> I'm looking for a quick dinner</div>
+                    <div class="example-line"><span class="bot">Bot:</span> How much time do you want to spend cooking?</div>
+                    <div class="example-line"><span class="user">You:</span> About 30 minutes</div>
+                    <div class="example-line"><span class="bot">Bot:</span> Which cuisine are you in the mood for?</div>
+                    <div class="example-line"><span class="user">You:</span> Something Indian</div>
+                    <div class="example-line"><span class="bot">Bot:</span> Here's what I recommend: [Shows recipes]</div>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3>Browse Your Recommendations</h3>
+                <p>Once the chatbot has enough information, it will show you personalized recipe recommendations with all the details you need.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">4</div>
+                <h3>See More Options</h3>
+                <p>Want more recipes? Just ask:</p>
+                <div class="example-phrases">
+                    <span class="phrase-chip">"Show me more"</span>
+                    <span class="phrase-chip">"Next"</span>
+                    <span class="phrase-chip">"Any other options?"</span>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2><span class="section-emoji">📋</span> Understanding Recipe Cards</h2>
+            <p>Each recipe recommendation includes:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Section</th>
+                        <th>What It Shows</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>📷 Image</td><td>A photo of the finished dish</td></tr>
+                    <tr><td>🍽️ Name</td><td>The recipe title</td></tr>
+                    <tr><td>🏷️ Tags</td><td>Cuisine type and meal category</td></tr>
+                    <tr><td>⏱️ Time</td><td>Total cooking time in minutes</td></tr>
+                    <tr><td>📝 Summary</td><td>Brief description of the dish</td></tr>
+                    <tr><td>🥕 Ingredients</td><td>List of ingredients needed</td></tr>
+                    <tr><td>📊 Nutrition</td><td>Calories, protein, carbs, and fat</td></tr>
+                    <tr><td>🧠 Why This?</td><td>Why this recipe matches your preferences</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2><span class="section-emoji">🔧</span> Refining Your Search</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h4>Change Preferences</h4>
+                    <p>"Actually, I want something vegetarian"</p>
+                    <p>"Can you show me faster recipes?"</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🚫</div>
+                    <h4>Exclude Ingredients</h4>
+                    <p>"Nothing with peanuts"</p>
+                    <p>"Exclude shellfish"</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🥗</div>
+                    <h4>Dietary Preferences</h4>
+                    <p>"I'm vegetarian"</p>
+                    <p>"Show me vegan options"</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h4>Start Fresh</h4>
+                    <p>Click "Start New Recommendation" in the sidebar to reset</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2><span class="section-emoji">💡</span> Tips for Best Results</h2>
+
+            <div class="tip-box">
+                <span class="tip-icon">✨</span>
+                <div>
+                    <strong>Be Specific!</strong>
+                    <p>The more details you provide, the better the recommendations.</p>
+                </div>
+            </div>
+
+            <div class="good-bad-grid">
+                <div class="good-example">
+                    <h4>✅ Good Examples</h4>
+                    <p>"Quick spicy Indian dinner with chicken"</p>
+                    <p>"Healthy breakfast under 20 minutes"</p>
+                    <p>"Something creamy and vegetarian"</p>
+                </div>
+                <div class="bad-example">
+                    <h4>❌ Too Vague</h4>
+                    <p>"Food"</p>
+                    <p>"Something to eat"</p>
+                    <p>"Recipe"</p>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <span class="tip-icon">🗣️</span>
+                <div>
+                    <strong>Use Natural Language</strong>
+                    <p>Talk to the chatbot like you would to a friend. It understands phrases like "I'm in the mood for something light" or "What can I make in under 20 minutes?"</p>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <span class="tip-icon">🔄</span>
+                <div>
+                    <strong>Refine As You Go</strong>
+                    <p>If the first recommendations aren't quite right, just tell it what you want different: "Something less spicy" or "More vegetarian options"</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2><span class="section-emoji">❓</span> Frequently Asked Questions</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">Q: What if no recipes match my preferences?</div>
+                <div class="faq-answer">The chatbot will automatically try to find similar recipes. If it still can't find matches, try being more flexible with your preferences or trying a different cuisine.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Q: Can I go back to previous recommendations?</div>
+                <div class="faq-answer">Yes! Just scroll up in the chat to see your previous conversations and recommendations.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Q: How accurate is the nutrition information?</div>
+                <div class="faq-answer">Nutrition facts are approximate values based on standard recipe calculations. Actual values may vary based on specific ingredients and portions.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Q: What cuisines are available?</div>
+                <div class="faq-answer">The chatbot has recipes from various cuisines including Indian, Pakistani, Italian, Mexican, and more!</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Q: Can I save my favorite recipes?</div>
+                <div class="faq-answer">Currently, recipes are displayed in the chat. You can screenshot or note down recipes you like. The chat history is preserved during your session.</div>
+            </div>
+        </section>
+
+        <section>
+            <h2><span class="section-emoji">👋</span> Greeting the Chatbot</h2>
+            <p>Feel free to say hello! The chatbot responds to friendly greetings:</p>
+            <div class="example-phrases">
+                <span class="phrase-chip">Hi</span>
+                <span class="phrase-chip">Hello</span>
+                <span class="phrase-chip">Hey there</span>
+                <span class="phrase-chip">Good morning</span>
+                <span class="phrase-chip">What's up</span>
+            </div>
+            <p>It will greet you back and ask how it can help with your food choices!</p>
+        </section>
+
+        <section>
+            <h2><span class="section-emoji">🔧</span> Troubleshooting</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h4>Chatbot Not Responding?</h4>
+                    <p>Check your internet connection and refresh the page.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h4>Recommendations Seem Off?</h4>
+                    <p>Provide more specific preferences or click "Start New Recommendation".</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⏳</div>
+                    <h4>Page Loading Slowly?</h4>
+                    <p>The first load may take a few seconds. Subsequent interactions will be faster.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2><span class="section-emoji">🔒</span> Privacy</h2>
+            <ul>
+                <li>Your conversation is only stored during your current session</li>
+                <li>Closing the browser clears your conversation history</li>
+                <li>No personal information is collected or stored</li>
+            </ul>
+        </section>
+    </div>
+
+    <footer>
+        <p>Food Recommendation Chatbot - User Guide</p>
+        <p>🍽️ Enjoy discovering new recipes!</p>
+    </footer>
+</body>
+</html>

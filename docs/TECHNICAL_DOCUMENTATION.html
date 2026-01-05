@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Documentation - Food Recommendation Chatbot</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+            --code-bg: #1e293b;
+            --border-color: #e2e8f0;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        nav.toc {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin: 30px 0;
+        }
+
+        nav.toc h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        nav.toc ul {
+            list-style: none;
+            columns: 2;
+            column-gap: 40px;
+        }
+
+        nav.toc li {
+            margin-bottom: 10px;
+        }
+
+        nav.toc a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        nav.toc a:hover {
+            color: var(--primary-color);
+        }
+
+        section {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            font-size: 1.3rem;
+            margin: 30px 0 15px 0;
+        }
+
+        h4 {
+            color: var(--text-color);
+            font-size: 1.1rem;
+            margin: 20px 0 10px 0;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--bg-color);
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        tr:hover {
+            background: var(--bg-color);
+        }
+
+        code {
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: var(--code-bg);
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+
+        .architecture-diagram {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .warning-box {
+            background: #fef3c7;
+            border-left: 4px solid var(--warning-color);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .success-box {
+            background: #d1fae5;
+            border-left: 4px solid var(--success-color);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        ul, ol {
+            margin: 15px 0 15px 25px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .component-card {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .component-card h4 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            nav.toc ul {
+                columns: 1;
+            }
+
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            section {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Technical Documentation</h1>
+        <p>Food Recommendation Chatbot - System Architecture & Design</p>
+        <span class="version-badge">Version 1.0.1 | January 2026</span>
+    </header>
+
+    <div class="container">
+        <nav class="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#overview">1. System Overview</a></li>
+                <li><a href="#architecture">2. Architecture</a></li>
+                <li><a href="#data-flow">3. Data Flow</a></li>
+                <li><a href="#components">4. Components</a></li>
+                <li><a href="#preference-schema">5. Preference Schema</a></li>
+                <li><a href="#pipeline">6. Recommendation Pipeline</a></li>
+                <li><a href="#api">7. API Integration</a></li>
+                <li><a href="#data-structure">8. Data Structure</a></li>
+                <li><a href="#installation">9. Installation & Setup</a></li>
+                <li><a href="#configuration">10. Configuration</a></li>
+                <li><a href="#extending">11. Extending the System</a></li>
+                <li><a href="#troubleshooting">12. Troubleshooting</a></li>
+            </ul>
+        </nav>
+
+        <section id="overview">
+            <h2>1. System Overview</h2>
+            <p>The Food Recommendation Chatbot is a conversational AI application built with Streamlit that uses natural language processing to understand user preferences and recommend recipes from a CSV dataset.</p>
+
+            <h3>Technology Stack</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Technology</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Frontend</td><td>Streamlit</td></tr>
+                    <tr><td>LLM Provider</td><td>Groq (LLaMA 3.1 8B)</td></tr>
+                    <tr><td>NLP Framework</td><td>LangChain</td></tr>
+                    <tr><td>Semantic Search</td><td>scikit-learn (TF-IDF)</td></tr>
+                    <tr><td>Data Processing</td><td>Pandas</td></tr>
+                    <tr><td>Configuration</td><td>python-dotenv</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Key Features</h3>
+            <ul>
+                <li>Natural language preference extraction</li>
+                <li>Multi-stage recommendation pipeline</li>
+                <li>Semantic search with TF-IDF</li>
+                <li>Progressive constraint relaxation</li>
+                <li>Conversational state management</li>
+                <li>Explainable recommendations</li>
+            </ul>
+        </section>
+
+        <section id="architecture">
+            <h2>2. Architecture</h2>
+            <div class="architecture-diagram">
+<pre>
+┌─────────────────────────────────────────────────────────────────┐
+│                    PRESENTATION LAYER                           │
+│                      (app.py - Streamlit)                       │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
+│  │ Chat UI      │  │ Recipe Cards │  │ Preferences  │          │
+│  │              │  │              │  │ Panel        │          │
+│  └──────────────┘  └──────────────┘  └──────────────┘          │
+└────────────────────────────┬────────────────────────────────────┘
+                             │
+┌────────────────────────────▼────────────────────────────────────┐
+│                    BUSINESS LOGIC LAYER                         │
+│                      (services/)                                │
+│  ┌────────────────────────────────────────────────────────────┐ │
+│  │  Conversation    │  Preference      │  Recommendation      │ │
+│  │  Management      │  Processing      │  Engine              │ │
+│  └────────────────────────────────────────────────────────────┘ │
+└────────────────────────────┬────────────────────────────────────┘
+                             │
+┌────────────────────────────▼────────────────────────────────────┐
+│                      DATA LAYER                                 │
+│  ┌─────────────┐  ┌─────────────────────────────────────────┐  │
+│  │data_loader  │  │ data/foods_data.csv (121 recipes)       │  │
+│  └─────────────┘  └─────────────────────────────────────────┘  │
+└────────────────────────────┬────────────────────────────────────┘
+                             │
+┌────────────────────────────▼────────────────────────────────────┐
+│                    EXTERNAL SERVICES                            │
+│              Groq API (LLaMA 3.1 8B)                           │
+└─────────────────────────────────────────────────────────────────┘
+</pre>
+            </div>
+        </section>
+
+        <section id="data-flow">
+            <h2>3. Data Flow</h2>
+            <h3>Request Processing Flow</h3>
+            <div class="architecture-diagram">
+<pre>
+User Input
+    │
+    ▼
+┌───────────────────┐
+│ Greeting Check    │──── Yes ──▶ Return greeting response
+└───────────────────┘
+    │ No
+    ▼
+┌───────────────────┐
+│ LLM Extraction    │ ◀── Groq LLaMA 3.1
+└───────────────────┘
+    │
+    ▼
+┌───────────────────┐
+│ Preference        │
+│ Merging           │
+└───────────────────┘
+    │
+    ▼
+┌───────────────────┐
+│ Policy Decision   │
+└───────────────────┘
+    │
+    ├─── "ask" ──▶ Return clarifying question
+    │
+    ▼ "recommend"
+┌───────────────────┐
+│ Recommendation    │
+│ Pipeline          │
+└───────────────────┘
+    │
+    ▼
+Display Results
+</pre>
+            </div>
+        </section>
+
+        <section id="components">
+            <h2>4. Components</h2>
+
+            <div class="component-card">
+                <h4>app.py - Main Application</h4>
+                <p><strong>Purpose:</strong> Streamlit UI and conversation loop management</p>
+                <p><strong>Responsibilities:</strong></p>
+                <ul>
+                    <li>Session state initialization and management</li>
+                    <li>User input handling</li>
+                    <li>Message history display</li>
+                    <li>Recipe card rendering with images and nutrition</li>
+                </ul>
+            </div>
+
+            <div class="component-card">
+                <h4>llm_extractor.py - NLP Processing</h4>
+                <p><strong>Purpose:</strong> Extract structured preferences from natural language</p>
+                <p><strong>Model:</strong> <code>llama-3.1-8b-instant</code> via Groq API</p>
+                <p><strong>Temperature:</strong> 0 (deterministic outputs)</p>
+            </div>
+
+            <div class="component-card">
+                <h4>recommender.py - Recommendation Engine</h4>
+                <p><strong>Purpose:</strong> Multi-stage filtering and ranking pipeline</p>
+                <p><strong>Stages:</strong> Semantic retrieval → Hard filters → Ingredient matching → Keyword matching → Cook time filtering → Soft scoring → Ranking</p>
+            </div>
+
+            <div class="component-card">
+                <h4>semantic_ranker.py - TF-IDF Search</h4>
+                <p><strong>Purpose:</strong> Semantic similarity ranking using TF-IDF and cosine similarity</p>
+                <p><strong>Algorithm:</strong> TF-IDF vectorization with English stop words removal</p>
+            </div>
+
+            <div class="component-card">
+                <h4>data_loader.py - Data Processing</h4>
+                <p><strong>Purpose:</strong> Load and preprocess CSV dataset</p>
+                <p><strong>Features:</strong> Time parsing, nutrition extraction, ingredient parsing</p>
+            </div>
+
+            <div class="component-card">
+                <h4>conversation_policy.py - Decision Logic</h4>
+                <p><strong>Purpose:</strong> Determine conversation flow (ask questions vs. recommend)</p>
+            </div>
+
+            <div class="component-card">
+                <h4>explanation_engine.py - Reasoning</h4>
+                <p><strong>Purpose:</strong> Generate human-readable explanations for recommendations</p>
+            </div>
+        </section>
+
+        <section id="preference-schema">
+            <h2>5. Preference Schema</h2>
+            <pre><code>{
+    "course": str | None,              // "breakfast", "lunch", "dinner", "snack"
+    "cuisine": str | None,             // "indian", "italian", "mexican"
+    "keywords": List[str],             // ["spicy", "healthy", "creamy"]
+    "max_cook_time": int | None,       // minutes (30, 60, etc.)
+    "selected_ingredients": List[str], // ["chicken", "rice"]
+    "excluded_ingredients": List[str], // ["peanuts", "shellfish"]
+    "diet": str | None,                // "vegetarian", "vegan"
+    "offset": int,                     // pagination (0, 5, 10)
+    "skipped_fields": List[str]        // fields user doesn't care about
+}</code></pre>
+        </section>
+
+        <section id="pipeline">
+            <h2>6. Recommendation Pipeline</h2>
+
+            <h3>Stage 1: Semantic Retrieval</h3>
+            <p>TF-IDF vectorizer finds top 100 semantically similar recipes based on query built from preferences.</p>
+
+            <h3>Stage 2: Hard Filters</h3>
+            <p>Exact substring matching for course and cuisine fields. Returns empty if no matches.</p>
+
+            <h3>Stage 3: Ingredient Matching</h3>
+            <p>Strict matching first, falls back to relaxed matching if no results.</p>
+
+            <h3>Stage 4: Keyword Matching</h3>
+            <p>Searches keywords in recipe name, summary, and keyword fields.</p>
+
+            <h3>Stage 5: Cook Time Filtering</h3>
+            <p>Three-tier tolerance: ±20% → 2x → 3x of requested time.</p>
+
+            <h3>Stage 6: Soft Scoring</h3>
+            <pre><code>final_score = semantic_score + keyword_score + time_bonus
+
+Scoring breakdown:
+- Keyword in keyword field: +2 points
+- Keyword in summary: +1 point
+- Selected ingredient match: +1.5 points
+- Cook time under requested: +0.5 bonus</code></pre>
+
+            <h3>Stage 7: Ranking & Pagination</h3>
+            <p>Sort by final_score descending, apply offset, return top 5 results.</p>
+        </section>
+
+        <section id="api">
+            <h2>7. API Integration</h2>
+
+            <h3>Groq LLM Configuration</h3>
+            <pre><code>from langchain_groq import ChatGroq
+
+llm = ChatGroq(
+    model="llama-3.1-8b-instant",
+    temperature=0,
+    api_key=os.getenv("GROQ_API_KEY")
+)</code></pre>
+
+            <div class="info-box">
+                <strong>Note:</strong> The LLM uses temperature=0 for deterministic, reproducible outputs.
+            </div>
+        </section>
+
+        <section id="data-structure">
+            <h2>8. Data Structure</h2>
+
+            <h3>CSV Schema (foods_data.csv)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Column</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>name</td><td>string</td><td>Recipe name</td></tr>
+                    <tr><td>imgurl</td><td>string</td><td>Image URL</td></tr>
+                    <tr><td>course</td><td>string</td><td>Meal type</td></tr>
+                    <tr><td>cuisine</td><td>string</td><td>Cuisine type</td></tr>
+                    <tr><td>keyword</td><td>string</td><td>Search keywords</td></tr>
+                    <tr><td>summary</td><td>string</td><td>Recipe description</td></tr>
+                    <tr><td>ingredients</td><td>JSON list</td><td>Ingredient list</td></tr>
+                    <tr><td>nutritions</td><td>JSON dict</td><td>Nutrition facts</td></tr>
+                    <tr><td>Times</td><td>JSON dict</td><td>Prep/cook times</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Processed DataFrame Columns</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Column</th>
+                        <th>Type</th>
+                        <th>Source</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>total_time_minutes</td><td>int</td><td>Calculated from Times</td></tr>
+                    <tr><td>calories_kcal</td><td>float</td><td>Extracted from nutritions</td></tr>
+                    <tr><td>protein_g</td><td>float</td><td>Extracted from nutritions</td></tr>
+                    <tr><td>carbs_g</td><td>float</td><td>Extracted from nutritions</td></tr>
+                    <tr><td>fat_g</td><td>float</td><td>Extracted from nutritions</td></tr>
+                    <tr><td>ingredients_list</td><td>list</td><td>Parsed from ingredients</td></tr>
+                    <tr><td>ingredients_text</td><td>string</td><td>Joined ingredients</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="installation">
+            <h2>9. Installation & Setup</h2>
+
+            <h3>Prerequisites</h3>
+            <ul>
+                <li>Python 3.8+</li>
+                <li>Groq API key</li>
+            </ul>
+
+            <h3>Installation Steps</h3>
+            <pre><code># Clone repository
+git clone &lt;repository-url&gt;
+cd food-recommendation-chatbot
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Configure environment
+echo "GROQ_API_KEY='your_api_key_here'" > .env
+
+# Run application
+streamlit run app.py</code></pre>
+
+            <h3>Dependencies</h3>
+            <pre><code>pandas
+streamlit
+langchain
+langchain_groq
+langchain-core
+langchain-community
+python-dotenv
+scikit-learn</code></pre>
+        </section>
+
+        <section id="configuration">
+            <h2>10. Configuration</h2>
+
+            <h3>Environment Variables</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Required</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>GROQ_API_KEY</code></td>
+                        <td>Yes</td>
+                        <td>Groq API key for LLM access</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="warning-box">
+                <strong>Security:</strong> Never commit API keys to version control. Use environment variables or .env files.
+            </div>
+        </section>
+
+        <section id="extending">
+            <h2>11. Extending the System</h2>
+
+            <h3>Adding New Recipes</h3>
+            <ol>
+                <li>Add rows to <code>data/foods_data.csv</code> with required columns</li>
+                <li>Restart application to reload data</li>
+            </ol>
+
+            <h3>Adding New Preference Fields</h3>
+            <ol>
+                <li>Update <code>BASE_PREFERENCES</code> in <code>preference_utils.py</code></li>
+                <li>Update extraction prompt in <code>llm_extractor.py</code></li>
+                <li>Update filtering logic in <code>recommender.py</code></li>
+                <li>Update UI in <code>app.py</code> if needed</li>
+            </ol>
+
+            <h3>Changing LLM Provider</h3>
+            <ol>
+                <li>Install appropriate LangChain integration</li>
+                <li>Update import in <code>llm_extractor.py</code></li>
+                <li>Update LLM initialization with new provider</li>
+            </ol>
+        </section>
+
+        <section id="troubleshooting">
+            <h2>12. Troubleshooting</h2>
+
+            <h3>Common Issues</h3>
+
+            <div class="warning-box">
+                <strong>"GROQ_API_KEY not found"</strong><br>
+                Ensure <code>.env</code> file exists in project root. Verify key format: <code>GROQ_API_KEY='your_key'</code>
+            </div>
+
+            <div class="warning-box">
+                <strong>"No recipes found"</strong><br>
+                Check if preferences are too restrictive. Verify data loaded correctly.
+            </div>
+
+            <div class="info-box">
+                <strong>Slow response times</strong><br>
+                Groq API latency varies (1-2s typical). Consider caching LLM responses for repeated queries.
+            </div>
+
+            <h3>Performance Considerations</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Approximate Size</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>CSV dataset</td><td>~50 MB</td></tr>
+                    <tr><td>TF-IDF vectors</td><td>~100 MB</td></tr>
+                    <tr><td>Session state</td><td>~5 MB per user</td></tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <footer>
+        <p>Food Recommendation Chatbot - Technical Documentation</p>
+        <p>Version 1.0.1 | January 2026</p>
+    </footer>
+</body>
+</html>
