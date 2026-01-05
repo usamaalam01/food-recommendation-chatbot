@@ -76,6 +76,22 @@ st.markdown(
     footer {
         visibility: hidden;
     }
+    /* User messages - right aligned */
+    [data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) {
+        flex-direction: row-reverse;
+        text-align: right;
+    }
+    [data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) [data-testid="stMarkdownContainer"] {
+        text-align: right;
+    }
+    [data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) > div:last-child {
+        align-items: flex-end;
+    }
+    /* Assistant messages - left aligned (default, but explicit) */
+    [data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarAssistant"]) {
+        flex-direction: row;
+        text-align: left;
+    }
     </style>
     """,
     unsafe_allow_html=True
